@@ -1,0 +1,9 @@
+# To build the gateware and load it onto the Cynthion.
+
+# The Cynthion package, for the board definitions. Brings in Amaranth, LUNA
+# and apollo.
+cynthion~=0.2.5
+
+# The FPGA toolchain.
+yowasp-yosys~=0.69
+yowasp-nextpnr-ecp5~=0.11

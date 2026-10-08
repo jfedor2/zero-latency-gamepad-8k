@@ -1,0 +1,21 @@
+name: release
+on:
+  push:
+    tags: 'r*'
+permissions:
+  contents: write
+jobs:
+  gateware:
+    uses: ./.github/workflows/gateware.yml
+  create-release:
+    needs: [ gateware ]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: download
+          merge-multiple: true
+      - uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
+        with:
+          draft: true
+          files: download/*

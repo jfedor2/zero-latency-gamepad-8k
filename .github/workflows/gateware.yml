@@ -1,0 +1,42 @@
+name: gateware
+on:
+  push:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash --noprofile --norc -x -e -o pipefail {0}
+jobs:
+  # The two bitstreams, for Cynthion r1.4.
+  gateware:
+    runs-on: ubuntu-24.04
+    env:
+      LUNA_PLATFORM: cynthion.gateware.platform:CynthionPlatformRev1D4
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # hurra-fpga, for the PS4/PS5 gateware.
+          submodules: true
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install the toolchain
+        run: pip install -r requirements.txt
+      - name: Test
+        run: python -m unittest tests.test_endpoint tests.test_device tests.test_ps4
+      - name: Build
+        run: |
+          python -m gateware.top --output gamepad.bit
+          python -m gateware.ps4 --output gamepad-ps5.bit
+      - uses: actions/upload-artifact@v7
+        with:
+          path: gamepad.bit
+          archive: false
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          path: gamepad-ps5.bit
+          archive: false
+          if-no-files-found: error

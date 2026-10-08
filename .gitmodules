@@ -1,0 +1,4 @@
+[submodule "deps/hurra-fpga"]
+	path = deps/hurra-fpga
+	url = https://github.com/jfedor2/hurra-fpga.git
+	branch = latency-tester
